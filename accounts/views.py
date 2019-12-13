@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, reverse
 from django.contrib import auth, messages
+from accounts.forms import UserLoginForm
 
 
 def index(request):
@@ -22,4 +23,6 @@ def logout(request):
 
 def login(request):
     """Return a login page"""
-    return render(request, 'login.html')
+    login_form = UserLoginForm()
+    # passing in the form to the template, creating context dictionary.
+    return render(request, 'login.html', {'login_form': login_form})
