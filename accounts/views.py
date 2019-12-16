@@ -14,12 +14,14 @@ def logout(request):
     messages.success(request, "You have successfully been logged out")
     return redirect(reverse('index'))
 
+  # creating login form using request.POST as constructor and new logiin form will be created with the data posted from form and UI.
+
 
 def login(request):
     """Return a login page"""
     if request.method == "POST":
         login_form = UserLoginForm(request.POST)
-
+        # validating data from post to form
         if login_form.is_valid():
             user = auth.authenticate(username=request.POST['username'],
                                      password=request.POST['password'])
