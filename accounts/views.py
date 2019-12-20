@@ -9,6 +9,8 @@ def index(request):
     return render(request,  'index.html')
 
 # login_required is a decorator which acts as a function signature to make sure users are logged in before executing anymore code.
+
+
 @login_required
 def logout(request):
     """Log the user out"""
@@ -43,6 +45,24 @@ def login(request):
 
 def registration(request):
     """Render the registration page"""
-    registration_form = UserRegistrationForm()
+    if request.user.is_authenticated:
+        return redirect(reverse('index'))
+
+    if request.method == "POST":
+        registration_form = UserRegistrationForm(request.POST)
+
+        if registration_form.is_valid():
+            registration_form.save()
+
+            user = auth.authenticate(username=request.POST['username'],
+                                     password=request.POST['password1'])
+            if user:
+                auth.login(user=user, request=request)
+                messages.success(request, "You have successfully registered")
+            else:
+                messages.error(
+                    request, "Unable to register your account at this time")
+    else:
+        registration_form = UserRegistrationForm()
     return render(request, 'registration.html', {
         "registration_form": registration_form})
